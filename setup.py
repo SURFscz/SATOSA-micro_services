@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name = "SCZ SATOSA micro_services",
+    name = "SCZ_SATOSA_micro_services",
     version = "0.1",
     author = "Martin van Es",
     author_email = "martin@surfnet.nl",
