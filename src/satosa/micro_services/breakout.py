@@ -38,7 +38,8 @@ class BreakOut(ResponseMicroService):
 
     def process(self, context, internal_response):
         logger.info("Process BreakOut")
-        context.state[STATE_KEY] = { "internal_resp": internal_response.to_dict() }
+        context.state[STATE_KEY] = {}
+        context.state[STATE_KEY]["internal_resp"] = internal_response.to_dict()
         logger.info("internal_resp: %s" % context.state[STATE_KEY]["internal_resp"])
         return self._check_requirement(context, internal_response)
 
