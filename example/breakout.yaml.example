@@ -1,0 +1,4 @@
+module: satosa.micro_services.breakout.BreakOut
+name: BreakOut
+config:
+    redirect_url: "/static/breakout"
