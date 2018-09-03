@@ -5,7 +5,6 @@ This means that any micro_service making use of InternalResponse.name_id
 like custom_uid MUST precede this one
 """
 import logging
-import pickle
 
 from ..internal_data import InternalResponse
 from ..logging_util import satosa_logging
