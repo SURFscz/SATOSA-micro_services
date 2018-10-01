@@ -38,7 +38,7 @@ class MetaInfo(ResponseMicroService):
         if ra:
             return ra.split(".")[-1].replace("/","")
         else:
-            return None
+            return 'Unknown'
 
     def process(self, context, internal_response):
         name = "unknown"
