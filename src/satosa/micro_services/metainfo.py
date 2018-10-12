@@ -18,6 +18,7 @@ class MetaInfo(ResponseMicroService):
         super().__init__(*args, **kwargs)
         self.displayname = config.get('displayname', 'idp_name')
         self.country = config.get('country', 'idp_country')
+        self.exceptions = config.get('exceptions', {})
         logger.info("MetaInfo micro_service is active %s, %s " % (self.displayname, self.country))
 
     def _get_registration_authority(self, md):
@@ -29,16 +30,10 @@ class MetaInfo(ResponseMicroService):
         return None
 
     def _get_ra_country(self, ra):
-        if ra == "https://incommon.org":
-            return "us"
-        if ra == "http://kafe.kreonet.net":
-            return "kr"
-        if ra == "http://www.csc.fi/haka":
-            return "fi"
-        if ra:
-            return ra.split(".")[-1].replace("/","")
-        else:
-            return 'Unknown'
+        country = self.exceptions.get(ra, None) if ra else 'Unknown'
+        if not country:
+            country = ra.split(".")[-1].replace("/","")
+        return country
 
     def process(self, context, internal_response):
         name = "unknown"
