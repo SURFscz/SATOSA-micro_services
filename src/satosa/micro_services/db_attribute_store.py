@@ -154,11 +154,17 @@ class DBAttributeStore(ResponseMicroService):
                 cursor.execute(query, values + [spEntityID] )
 
                 rows = cursor.fetchall();
-                if len(rows) > 0:
-                    return_values=json.loads(rows[0][0])
-                    #return_values = self.converter.to_internal(self.attribute_profile, return_values)
-                    if len(rows) > 1:
-                        satosa_logging(logger, logging.DEBUG, "{} too many CO's found ({})".format(logprefix, len(rows)), context.state)
+                return_valles = {}
+
+                for row in rows:
+                    attributes = json.loads(row[0])
+                    for k, v in attributes.items():
+                        if isinstance(v, str):
+                            v = [v]
+                        return_values.setdefault(k, []).extend(v)
+
+                if len(rows) > 1:
+                    satosa_logging(logger, logging.DEBUG, "{} More than one CO found ({})".format(logprefix, len(rows)), context.state)
 
             satosa_logging(logger, logging.DEBUG, "{} return_values: {}".format(logprefix, return_values), context.state)
 
@@ -178,10 +184,10 @@ class DBAttributeStore(ResponseMicroService):
         for k, v in return_values.items():
             if isinstance(v, str):
                 v = [v]
-            if k in data.attributes and not clear_input_attributes:
-                data.attributes[k] = data.attributes[k] + v
-            else:
+            if clear_input_attributes:
                 data.attributes[k] = v
+            else:
+                data.attributes.setdefault(k, []).extend(v)
 
         satosa_logging(logger, logging.DEBUG, "{} returning data.attributes {}".format(logprefix, str(data.attributes)), context.state)
         return super().process(context, data)
