@@ -2,14 +2,14 @@
 SATOSA microservice that checks compliance with R&S attribute set
 """
 
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
-from ..response import Redirect
+from satosa.response import Redirect
 
 import copy
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class RandSAcl(ResponseMicroService):
     """

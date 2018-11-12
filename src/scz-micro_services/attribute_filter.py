@@ -1,12 +1,12 @@
 import re
 
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
-from ..util import get_dict_defaults
+from satosa.util import get_dict_defaults
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class AttributeFilter(ResponseMicroService):
     """

@@ -3,11 +3,11 @@ Micro Service that extracts info from IdP metadata if available
 """
 import logging
 
-from ..internal_data import InternalResponse
-from ..logging_util import satosa_logging
-from ..micro_services.base import ResponseMicroService
+from satosa.internal_data import InternalResponse
+from satosa.logging_util import satosa_logging
+from satosa.micro_services.base import ResponseMicroService
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class MetaInfo(ResponseMicroService):
     """

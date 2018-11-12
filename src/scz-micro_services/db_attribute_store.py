@@ -5,17 +5,17 @@ for records and then consume attributes from
 the record and assert them to the receiving SP.
 """
 
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
 from base64 import urlsafe_b64encode, urlsafe_b64decode
-from ..attribute_mapping import AttributeMapper
+from satosa.attribute_mapping import AttributeMapper
 
 import json
 import copy
 import logging
 import MySQLdb
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class DBAttributeStore(ResponseMicroService):
     """

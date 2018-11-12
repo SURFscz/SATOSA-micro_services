@@ -3,10 +3,10 @@ A Custom Alias microservice
 """
 import os
 import logging
-from ..micro_services.base import RequestMicroService
-from ..response import Response
+from satosa.micro_services.base import RequestMicroService
+from satosa.response import Response
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class CustomAlias(RequestMicroService):
 
