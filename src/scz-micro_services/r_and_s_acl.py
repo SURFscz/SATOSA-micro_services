@@ -2,14 +2,14 @@
 SATOSA microservice that checks compliance with R&S attribute set
 """
 
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
-from ..response import Redirect
+from satosa.response import Redirect
 
 import copy
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class RandSAcl(ResponseMicroService):
     """
@@ -59,7 +59,20 @@ class RandSAcl(ResponseMicroService):
         isset = { a: a in valid_attributes for a in attribute_mapping.keys() }
         satosa_logging(logger, logging.DEBUG, "{} isset: {}".format(logprefix, isset), context.state)
 
-        valid_r_and_s = (isset['edupersonprincipalname'] or (isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (isset['displayname'] or (isset['givenname'] and isset['sn'])) and isset['mail']
+        #valid_r_and_s = (isset['edupersonprincipalname'] or (isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (isset['displayname'] or (isset['givenname'] and isset['sn'])) and isset['mail']
+        valid_r_and_s = (
+                          isset['edupersonprincipalname']
+                            or (
+                              isset['edupersonprincipalname'] and isset['edupersontargetedid']
+                            )
+                        ) and (
+                          isset['displayname']
+                            or (
+                              isset['givenname'] and isset['sn']
+                            )
+                        ) and (
+                          isset['mail']        
+                        )
 
         if valid_r_and_s:
             satosa_logging(logger, logging.DEBUG, "{} R&S attribute set found, user may continue".format(logprefix), context.state)

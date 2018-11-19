@@ -1,11 +1,11 @@
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
 
 from xml.etree import ElementTree as ET
 import logging
 import hashlib
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class CustomUID(ResponseMicroService):
     def __init__(self, config, *args, **kwargs):
