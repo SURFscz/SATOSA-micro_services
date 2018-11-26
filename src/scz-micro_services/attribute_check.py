@@ -3,11 +3,11 @@ SATOSA microservice that checks whether user attributes
 have changed since last visit
 """
 
-from .base import ResponseMicroService
+from satosa.micro_services.base import ResponseMicroService
 from satosa.logging_util import satosa_logging
 from base64 import b64encode, urlsafe_b64encode, urlsafe_b64decode
-from ..attribute_mapping import AttributeMapper
-from ..response import Redirect
+from satosa.attribute_mapping import AttributeMapper
+from satosa.response import Redirect
 from hashlib import sha256
 
 import json
@@ -15,7 +15,7 @@ import copy
 import logging
 import MySQLdb
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('satosa')
 
 class AttributeCheck(ResponseMicroService):
     """
