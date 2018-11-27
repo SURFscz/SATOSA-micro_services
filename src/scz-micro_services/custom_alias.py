@@ -34,7 +34,7 @@ class CustomAlias(RequestMicroService):
         path = context._path
         endpoint = path.split("/")[0]
         target = path[len(endpoint)+1:]
-        alias = "%s/%s/%s" % (os.getcwd(), self.locations[endpoint], target)
+        alias = "%s/%s" % (self.locations[endpoint], target)
         logger.info("{} _handle: {} - {} - {}".format(self.logprefix, endpoint, target, alias))
         try:
             response = open(alias, 'r').read()
