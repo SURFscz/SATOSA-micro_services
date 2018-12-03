@@ -181,7 +181,8 @@ class DBAttributeStore(ResponseMicroService):
         if clear_input_attributes:
             satosa_logging(logger, logging.DEBUG, "{} Clearing values from input attributes".format(logprefix), context.state)
 
-        for k, v in return_values.items():
+        internal = self.converter.to_internal(self.attribute_profile, return_values)
+        for k, v in internal.items():
             if isinstance(v, str):
                 v = [v]
             if clear_input_attributes:
