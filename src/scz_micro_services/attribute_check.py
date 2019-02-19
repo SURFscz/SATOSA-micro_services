@@ -46,7 +46,7 @@ class AttributeCheck(ResponseMicroService):
         try:
             spEntityID = context.state.state_dict['SATOSA_BASE']['requester']
             idpEntityID = data.auth_info.issuer
-        except KeyError as err:
+        except KeyError:
             satosa_logging(logger, logging.ERROR,
                            "{} Unable to determine the entityID's for the IdP or SP".format(logprefix), context.state)
             return super().process(context, data)
@@ -142,7 +142,7 @@ class AttributeCheck(ResponseMicroService):
 
             attributes_changed = False
 
-            rows = cursor.fetchall();
+            rows = cursor.fetchall()
             if (not len(rows)):
                 # satosa_logging(logger, logging.DEBUG, "{} No rows found, insert hash".format(logprefix), context.state)
                 query = "INSERT INTO `{}` (`nameid`, `hash`) VALUES (%s, %s)".format(self.ATTRIBUTEHASH_TABLE)

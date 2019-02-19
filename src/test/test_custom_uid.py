@@ -1,11 +1,10 @@
-import importlib
 from unittest import TestCase
 from uuid import uuid4
 
 from munch import munchify
 from satosa.logging_util import LOGGER_STATE_KEY
 
-custom_uid = importlib.import_module("src.scz-micro_services.custom_uid")
+from src.scz_micro_services.custom_uid import CustomUID
 
 
 class TestCustomUid(TestCase):
@@ -15,7 +14,7 @@ class TestCustomUid(TestCase):
                             "select": {"a": "b", "c": "d"},
                             "custom_attribute": "",
                             "user_id": "urn:john"})
-        c_uid = custom_uid.CustomUID(context, name="custom_uid", base_url="http://localhost")
+        c_uid = CustomUID(context, name="custom_uid", base_url="http://localhost")
 
         def next_call(ctx={}, data={}):
             pass

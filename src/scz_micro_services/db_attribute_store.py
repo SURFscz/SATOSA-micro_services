@@ -163,7 +163,7 @@ class DBAttributeStore(ResponseMicroService):
                 # Execute prepared statement
                 cursor.execute(query, values + [spEntityID])
 
-                rows = cursor.fetchall();
+                rows = cursor.fetchall()
                 return_valles = {}
 
                 for row in rows:

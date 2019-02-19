@@ -67,19 +67,9 @@ class RandSAcl(ResponseMicroService):
         satosa_logging(logger, logging.DEBUG, "{} isset: {}".format(logprefix, isset), context.state)
 
         # valid_r_and_s = (isset['edupersonprincipalname'] or (isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (isset['displayname'] or (isset['givenname'] and isset['sn'])) and isset['mail']
-        valid_r_and_s = (
-                                isset['edupersonprincipalname']
-                                or (
-                                        isset['edupersonprincipalname'] and isset['edupersontargetedid']
-                                )
-                        ) and (
-                                isset['displayname']
-                                or (
-                                        isset['givenname'] and isset['sn']
-                                )
-                        ) and (
-                            isset['mail']
-                        )
+        valid_r_and_s = (isset['edupersonprincipalname'] or (
+                    isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (
+                                    isset['displayname'] or (isset['givenname'] and isset['sn'])) and (isset['mail'])
 
         if valid_r_and_s:
             satosa_logging(logger, logging.DEBUG, "{} R&S attribute set found, user may continue".format(logprefix),

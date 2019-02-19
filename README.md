@@ -26,9 +26,14 @@ Deny access if user is not present in database. Not used anymore.
 
 
 ## Development
+```
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r ./test_requirements.txt
-
+```
+## Testing
+```
+python -m pytest
+```
 
