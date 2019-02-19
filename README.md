@@ -23,3 +23,12 @@ Deny access based on absence of attributes. This is superceded by r_and_s_acl.py
 Micro service to directly query COManage API. This is superceded by db_attribute_store.py.
 #### db_acl.py
 Deny access if user is not present in database. Not used anymore.
+
+
+## Development
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r ./test_requirements.txt
+
+

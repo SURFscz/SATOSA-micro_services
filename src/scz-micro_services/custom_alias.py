@@ -1,15 +1,15 @@
 """
 A Custom Alias microservice
 """
-import os
 import logging
+
 from satosa.micro_services.base import RequestMicroService
 from satosa.response import Response
 
 logger = logging.getLogger('satosa')
 
-class CustomAlias(RequestMicroService):
 
+class CustomAlias(RequestMicroService):
     logprefix = "CUSTOM_ALIAS_SERVICE:"
 
     def __init__(self, config, *args, **kwargs):
@@ -18,7 +18,7 @@ class CustomAlias(RequestMicroService):
         :param config: The SATOSA proxy config
         """
         super().__init__(*args, **kwargs)
-        #self.config = config
+        # self.config = config
         if 'locations' in config:
             self.locations = config['locations']
 
@@ -33,7 +33,7 @@ class CustomAlias(RequestMicroService):
     def _handle(self, context):
         path = context._path
         endpoint = path.split("/")[0]
-        target = path[len(endpoint)+1:]
+        target = path[len(endpoint) + 1:]
         alias = "%s/%s" % (self.locations[endpoint], target)
         logger.info("{} _handle: {} - {} - {}".format(self.logprefix, endpoint, target, alias))
         try:
@@ -47,4 +47,3 @@ class CustomAlias(RequestMicroService):
                 response = response.replace(search, replace)
 
         return Response(response)
-

@@ -1,11 +1,11 @@
-from satosa.micro_services.base import ResponseMicroService
-from satosa.logging_util import satosa_logging
-
-from xml.etree import ElementTree as ET
 import logging
-import hashlib
+from xml.etree import ElementTree as ET
+
+from satosa.logging_util import satosa_logging
+from satosa.micro_services.base import ResponseMicroService
 
 logger = logging.getLogger('satosa')
+
 
 class CustomUID(ResponseMicroService):
     def __init__(self, config, *args, **kwargs):
@@ -17,7 +17,8 @@ class CustomUID(ResponseMicroService):
         # Initialize the configuration to use as the default configuration
         # that is passed during initialization.
         config = self.config
-        satosa_logging(logger, logging.DEBUG, "{} Using default configuration {}".format(self.logprefix, config), context.state)
+        satosa_logging(logger, logging.DEBUG, "{} Using default configuration {}".format(self.logprefix, config),
+                       context.state)
 
         # Obtain configuration details from the per-SP configuration or the default configuration
         try:
@@ -37,7 +38,8 @@ class CustomUID(ResponseMicroService):
                 user_id = self.config['user_id']
 
         except KeyError as err:
-            satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(self.logprefix, err), context.state)
+            satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(self.logprefix, err),
+                           context.state)
             return super().process(context, data)
 
         satosa_logging(logger, logging.DEBUG, "{} select {}".format(self.logprefix, select), context.state)
@@ -45,11 +47,13 @@ class CustomUID(ResponseMicroService):
         name_id = data.name_id
 
         # Prepare data dictionary
-        d = { a: [] for a in select if a in data.attributes }
+        d = {a: [] for a in select if a in data.attributes}
 
         if '__name_id__' in select and name_id.format == "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" and name_id.text:
-            satosa_logging(logger, logging.DEBUG, "{} Using name_id format {}".format(self.logprefix, name_id.format), context.state)
-            satosa_logging(logger, logging.DEBUG, "{} Using name_id text {}".format(self.logprefix, name_id.text), context.state)
+            satosa_logging(logger, logging.DEBUG, "{} Using name_id format {}".format(self.logprefix, name_id.format),
+                           context.state)
+            satosa_logging(logger, logging.DEBUG, "{} Using name_id text {}".format(self.logprefix, name_id.text),
+                           context.state)
             d['__name_id__'] = [name_id.text]
         else:
             for a in d:
@@ -73,5 +77,7 @@ class CustomUID(ResponseMicroService):
                 data.user_id = uid
                 context.state['IDHASHER']['hash_type'] = 'persistent'
 
-        satosa_logging(logger, logging.DEBUG, "{} custom uid ({}): {}".format(self.logprefix, custom_attribute, data.attributes.get(custom_attribute)), context.state)
+        satosa_logging(logger, logging.DEBUG, "{} custom uid ({}): {}".format(self.logprefix, custom_attribute,
+                                                                              data.attributes.get(custom_attribute)),
+                       context.state)
         return super().process(context, data)

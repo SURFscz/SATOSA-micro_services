@@ -3,11 +3,10 @@ Micro Service that extracts info from IdP metadata if available
 """
 import logging
 
-from satosa.internal_data import InternalResponse
-from satosa.logging_util import satosa_logging
 from satosa.micro_services.base import ResponseMicroService
 
 logger = logging.getLogger('satosa')
+
 
 class MetaInfo(ResponseMicroService):
     """
@@ -39,7 +38,7 @@ class MetaInfo(ResponseMicroService):
     def _get_ra_country(self, ra):
         country = self.exceptions.get(ra, None) if ra else 'Unknown'
         if not country:
-            country = ra.split(".")[-1].replace("/","")
+            country = ra.split(".")[-1].replace("/", "")
         return country
 
     def process(self, context, internal_response):

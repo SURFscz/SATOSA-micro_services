@@ -7,12 +7,12 @@ like custom_uid MUST precede this one
 import logging
 
 from satosa.internal_data import InternalResponse
-from satosa.logging_util import satosa_logging
 from satosa.micro_services.base import ResponseMicroService
 from satosa.response import Redirect
 
 logger = logging.getLogger('satosa')
 STATE_KEY = "BREAKOUT"
+
 
 class BreakOut(ResponseMicroService):
     """

@@ -5,17 +5,17 @@ for records and then consume attributes from
 the record and assert them to the receiving SP.
 """
 
-from satosa.micro_services.base import ResponseMicroService
-from satosa.logging_util import satosa_logging
-from base64 import urlsafe_b64encode, urlsafe_b64decode
-from satosa.attribute_mapping import AttributeMapper
-
-import json
 import copy
+import json
 import logging
+
 import MySQLdb
+from satosa.attribute_mapping import AttributeMapper
+from satosa.logging_util import satosa_logging
+from satosa.micro_services.base import ResponseMicroService
 
 logger = logging.getLogger('satosa')
+
 
 class DBAttributeStore(ResponseMicroService):
     """
@@ -46,20 +46,24 @@ class DBAttributeStore(ResponseMicroService):
         if 'db_password' in configClean:
             configClean['db_password'] = 'XXXXXXXX'
 
-        satosa_logging(logger, logging.DEBUG, "{} Using default configuration {}".format(logprefix, configClean), context.state)
+        satosa_logging(logger, logging.DEBUG, "{} Using default configuration {}".format(logprefix, configClean),
+                       context.state)
 
         # Find the entityID for the SP that initiated the flow and target IdP
         try:
             spEntityID = context.state.state_dict['SATOSA_BASE']['requester']
-            #router = context.state.state_dict['ROUTER']
-            #idpEntityID = urlsafe_b64decode(context.state.state_dict[router]['target_entity_id']).decode("utf-8")
+            # router = context.state.state_dict['ROUTER']
+            # idpEntityID = urlsafe_b64decode(context.state.state_dict[router]['target_entity_id']).decode("utf-8")
             idpEntityID = data.auth_info.issuer
         except KeyError as err:
-            satosa_logging(logger, logging.ERROR, "{} Unable to determine the entityID's for the IdP or SP".format(logprefix), context.state)
+            satosa_logging(logger, logging.ERROR,
+                           "{} Unable to determine the entityID's for the IdP or SP".format(logprefix), context.state)
             return super().process(context, data)
 
-        satosa_logging(logger, logging.DEBUG, "{} entityID for the requester is {}".format(logprefix, spEntityID), context.state)
-        satosa_logging(logger, logging.ERROR, "{} entityID for the source IdP is {}".format(logprefix, idpEntityID), context.state)
+        satosa_logging(logger, logging.DEBUG, "{} entityID for the requester is {}".format(logprefix, spEntityID),
+                       context.state)
+        satosa_logging(logger, logging.ERROR, "{} entityID for the source IdP is {}".format(logprefix, idpEntityID),
+                       context.state)
 
         # Examine our configuration to determine if there is a per-SP configuration
         if spEntityID in self.config:
@@ -67,7 +71,9 @@ class DBAttributeStore(ResponseMicroService):
             configClean = copy.deepcopy(config)
             if 'db_password' in configClean:
                 configClean['db_password'] = 'XXXXXXXX'
-            satosa_logging(logger, logging.DEBUG, "{} For SP {} using configuration {}".format(logprefix, spEntityID, configClean), context.state)
+            satosa_logging(logger, logging.DEBUG,
+                           "{} For SP {} using configuration {}".format(logprefix, spEntityID, configClean),
+                           context.state)
 
         # Obtain configuration details from the per-SP configuration or the default configuration
         try:
@@ -109,49 +115,53 @@ class DBAttributeStore(ResponseMicroService):
                 user_id = self.config['user_id']
 
         except KeyError as err:
-            satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(logprefix, err), context.state)
+            satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(logprefix, err),
+                           context.state)
             return super().process(context, data)
-
-        record = None
-
         try:
-            #satosa_logging(logger, logging.DEBUG, "{} Using DB host {}".format(logprefix, db_host), context.state)
-            #satosa_logging(logger, logging.DEBUG, "{} Using DB user {}".format(logprefix, db_user), context.state)
-            #satosa_logging(logger, logging.DEBUG, "{} Using DB schema {}".format(logprefix, db_schema), context.state)
+            # satosa_logging(logger, logging.DEBUG, "{} Using DB host {}".format(logprefix, db_host), context.state)
+            # satosa_logging(logger, logging.DEBUG, "{} Using DB user {}".format(logprefix, db_user), context.state)
+            # satosa_logging(logger, logging.DEBUG, "{} Using DB schema {}".format(logprefix, db_schema), context.state)
 
             connection = MySQLdb.connect(host=db_host, user=db_user, passwd=db_password, db=db_schema)
             cursor = connection.cursor()
 
             satosa_logging(logger, logging.DEBUG, "{} Connected to DB server".format(logprefix), context.state)
-            satosa_logging(logger, logging.DEBUG, "{} Using IdP asserted attributes {}".format(logprefix, idp_identifiers), context.state)
+            satosa_logging(logger, logging.DEBUG,
+                           "{} Using IdP asserted attributes {}".format(logprefix, idp_identifiers), context.state)
 
             values = []
             if user_id:
                 values += [data.user_id]
             for identifier in idp_identifiers:
                 if identifier in data.attributes:
-                    satosa_logging(logger, logging.DEBUG, "{} IdP asserted {} values for attribute {}: {}".format(logprefix, len(data.attributes[identifier]),identifier, data.attributes[identifier]), context.state)
+                    satosa_logging(logger, logging.DEBUG,
+                                   "{} IdP asserted {} values for attribute {}: {}".format(logprefix, len(
+                                       data.attributes[identifier]), identifier, data.attributes[identifier]),
+                                   context.state)
                     values += data.attributes[identifier]
                 else:
-                    satosa_logging(logger, logging.DEBUG, "{} IdP did not assert attribute {}".format(logprefix, identifier), context.state)
+                    satosa_logging(logger, logging.DEBUG,
+                                   "{} IdP did not assert attribute {}".format(logprefix, identifier), context.state)
 
-            satosa_logging(logger, logging.DEBUG, "{} IdP asserted values for DB id: {}".format(logprefix, values), context.state)
+            satosa_logging(logger, logging.DEBUG, "{} IdP asserted values for DB id: {}".format(logprefix, values),
+                           context.state)
 
             return_values = {}
 
             if (len(values) > 0):
                 # Prepare select statement
-                query  = "SELECT p.`attributes` FROM `{}` p "
+                query = "SELECT p.`attributes` FROM `{}` p "
                 query += "JOIN `{}` ps ON p.`id`=ps.`zone_person_id` "
                 query += "JOIN `{}` z ON ps.`zone_service_id`=z.`id` "
-                query += "WHERE p.`uid` in (" + ",".join(['%s']*len(values)) + ") "
+                query += "WHERE p.`uid` in (" + ",".join(['%s'] * len(values)) + ") "
                 query += "AND z.`metadata`=%s"
                 query = query.format(self.PEOPLE_TABLE, self.PERSON_SERVICES_TABLE, self.SERVICES_TABLE)
 
                 satosa_logging(logger, logging.DEBUG, "{} query: {}".format(logprefix, query), context.state)
 
                 # Execute prepared statement
-                cursor.execute(query, values + [spEntityID] )
+                cursor.execute(query, values + [spEntityID])
 
                 rows = cursor.fetchall();
                 return_valles = {}
@@ -164,9 +174,11 @@ class DBAttributeStore(ResponseMicroService):
                         return_values.setdefault(k, []).extend(v)
 
                 if len(rows) > 1:
-                    satosa_logging(logger, logging.DEBUG, "{} More than one CO found ({})".format(logprefix, len(rows)), context.state)
+                    satosa_logging(logger, logging.DEBUG, "{} More than one CO found ({})".format(logprefix, len(rows)),
+                                   context.state)
 
-            satosa_logging(logger, logging.DEBUG, "{} return_values: {}".format(logprefix, return_values), context.state)
+            satosa_logging(logger, logging.DEBUG, "{} return_values: {}".format(logprefix, return_values),
+                           context.state)
 
         except Exception as err:
             satosa_logging(logger, logging.ERROR, "{} Caught exception: {0}".format(logprefix, err), None)
@@ -179,7 +191,8 @@ class DBAttributeStore(ResponseMicroService):
         # Before using a found record, if any, to populate attributes
         # clear any attributes incoming to this microservice if so configured.
         if clear_input_attributes:
-            satosa_logging(logger, logging.DEBUG, "{} Clearing values from input attributes".format(logprefix), context.state)
+            satosa_logging(logger, logging.DEBUG, "{} Clearing values from input attributes".format(logprefix),
+                           context.state)
 
         internal = self.converter.to_internal(self.attribute_profile, return_values)
         for k, v in internal.items():
@@ -190,5 +203,6 @@ class DBAttributeStore(ResponseMicroService):
             else:
                 data.attributes.setdefault(k, []).extend(v)
 
-        satosa_logging(logger, logging.DEBUG, "{} returning data.attributes {}".format(logprefix, str(data.attributes)), context.state)
+        satosa_logging(logger, logging.DEBUG, "{} returning data.attributes {}".format(logprefix, str(data.attributes)),
+                       context.state)
         return super().process(context, data)
