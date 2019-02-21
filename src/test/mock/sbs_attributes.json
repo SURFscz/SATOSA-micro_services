@@ -13,7 +13,5 @@
   "urn:mace:dir:attribute-def:postalAddress": [
     "Postal 1234AA"
   ],
-  "urn:mace:dir:attribute-def:uid": [
-    "urn:john"
-  ]
+  "urn:mace:dir:attribute-def:uid": "urn:john"
 }

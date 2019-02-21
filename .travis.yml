@@ -1,0 +1,24 @@
+---
+language: python
+
+python:
+  - "3.6"
+
+cache:
+  pip: true
+
+jobs:
+  include:
+    #######################################################
+    ## Build, run local tests, and check code coverage ####
+    #######################################################
+    - stage: test
+      before_install:
+        - pip install -r ./test_requirements.txt
+        - pip install codecov
+      install:
+      script:
+        - python -m pytest --cov=src src/test
+        - flake8 ./src/
+      after_success:
+        - codecov

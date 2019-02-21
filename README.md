@@ -24,6 +24,7 @@ pip install -r ./test_requirements.txt
 ```
 ## Testing
 ```
-python -m pytest
+python -m pytest --cov=src --cov-report html:htmlcov src/test
+open htmlcov/index.html 
 ```
 

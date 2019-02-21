@@ -55,26 +55,20 @@ class SBSAttributeStore(ResponseMicroService):
         except KeyError as err:
             satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Configuration {err} is missing", context.state)
             return super().process(context, data)
-        try:
-            res = requests.get(f"{sbs_api_base_url}api/user_service_profiles/attributes",
-                               params={"service_entity_id": sp_entity_id, "uid": data.user_id},
-                               auth=(sbs_api_user, sbs_api_password))
-            if res.status_code != 200:
-                satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Error response {res.status_code} from SBS",
-                               context.state)
-                return super().process(context, data)
 
-            json_response = res.json()
-            self._debug(f"{self.log_prefix} Response from SBS: {json_response}", context)
-
-        except Exception as err:
-            satosa_logging(logger, logging.ERROR, "{} Caught exception: {0}".format(self.log_prefix, err), None)
+        res = requests.get(f"{sbs_api_base_url}api/user_service_profiles/attributes",
+                           params={"service_entity_id": sp_entity_id, "uid": data.user_id},
+                           auth=(sbs_api_user, sbs_api_password))
+        if res.status_code != 200:
+            satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Error response {res.status_code} from SBS",
+                           context.state)
             return super().process(context, data)
+
+        json_response = res.json()
+        self._debug(f"{self.log_prefix} Response from SBS: {json_response}", context)
 
         internal = self.converter.to_internal(self.attribute_profile, json_response)
         for k, v in internal.items():
-            if isinstance(v, str):
-                v = [v]
             data.attributes[k] = v
 
         self._debug(f"{self.log_prefix} returning data.attributes {data.attributes}", context)
