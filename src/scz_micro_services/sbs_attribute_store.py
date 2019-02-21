@@ -1,0 +1,81 @@
+"""
+SATOSA microservice that uses an identifier asserted by
+the home organization SAML IdP as a key to query the SBS API
+for attributes assert them to the receiving SP.
+"""
+
+import copy
+import logging
+
+import requests
+from satosa.attribute_mapping import AttributeMapper
+from satosa.logging_util import satosa_logging
+from satosa.micro_services.base import ResponseMicroService
+
+logger = logging.getLogger("satosa")
+
+
+class SBSAttributeStore(ResponseMicroService):
+    log_prefix = "SBS_ATTRIBUTE_STORE:"
+    attribute_profile = "saml"
+
+    def __init__(self, config, internal_attributes, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config = config
+        self.converter = AttributeMapper(internal_attributes)
+
+    def _debug(self, msg, context):
+        satosa_logging(logger, logging.DEBUG, msg, context.state)
+
+    def process(self, context, data):
+        config_clean = copy.deepcopy(self.config)
+        if "sbs_api_password" in config_clean:
+            del config_clean["sbs_api_password"]
+
+        self._debug(f"{self.log_prefix} Using default configuration {config_clean}", context)
+
+        # Find the entityID for the SP that initiated the flow and target IdP
+        try:
+            sp_entity_id = context.state.state_dict["SATOSA_BASE"]["requester"]
+            idp_entity_id = data.auth_info.issuer
+        except KeyError:
+            satosa_logging(logger, logging.ERROR,
+                           f"{self.log_prefix} Unable to determine the entityID's for the IdP or SP", context.state)
+            return super().process(context, data)
+
+        self._debug(f"{self.log_prefix} entityID for the requester is {sp_entity_id}", context)
+        self._debug(f"{self.log_prefix} entityID for the source IdP is {idp_entity_id}", context)
+
+        # Obtain configuration details from the per-SP configuration or the default configuration
+        try:
+            sbs_api_user = self.config["sbs_api_user"]
+            sbs_api_password = self.config["sbs_api_password"]
+            sbs_api_base_url = self.config["sbs_api_base_url"]
+
+        except KeyError as err:
+            satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Configuration {err} is missing", context.state)
+            return super().process(context, data)
+        try:
+            res = requests.get(f"{sbs_api_base_url}api/user_service_profiles/attributes",
+                               params={"service_entity_id": sp_entity_id, "uid": data.user_id},
+                               auth=(sbs_api_user, sbs_api_password))
+            if res.status_code != 200:
+                satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Error response {res.status_code} from SBS",
+                               context.state)
+                return super().process(context, data)
+
+            json_response = res.json()
+            self._debug(f"{self.log_prefix} Response from SBS: {json_response}", context)
+
+        except Exception as err:
+            satosa_logging(logger, logging.ERROR, "{} Caught exception: {0}".format(self.log_prefix, err), None)
+            return super().process(context, data)
+
+        internal = self.converter.to_internal(self.attribute_profile, json_response)
+        for k, v in internal.items():
+            if isinstance(v, str):
+                v = [v]
+            data.attributes[k] = v
+
+        self._debug(f"{self.log_prefix} returning data.attributes {data.attributes}", context)
+        return super().process(context, data)

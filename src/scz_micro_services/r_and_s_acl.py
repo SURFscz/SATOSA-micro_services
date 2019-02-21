@@ -37,12 +37,8 @@ class RandSAcl(ResponseMicroService):
         try:
             if 'attribute_mapping' in config:
                 attribute_mapping = config['attribute_mapping']
-            else:
-                attibute_mapping = self.config['attribute_mapping']
             if 'access_denied' in config:
                 access_denied = config['access_denied']
-            else:
-                access_denied = self.config['access_denied']
 
         except KeyError as err:
             satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(logprefix, err),
@@ -68,8 +64,8 @@ class RandSAcl(ResponseMicroService):
 
         # valid_r_and_s = (isset['edupersonprincipalname'] or (isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (isset['displayname'] or (isset['givenname'] and isset['sn'])) and isset['mail']
         valid_r_and_s = (isset['edupersonprincipalname'] or (
-                    isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (
-                                    isset['displayname'] or (isset['givenname'] and isset['sn'])) and (isset['mail'])
+                isset['edupersonprincipalname'] and isset['edupersontargetedid'])) and (
+                                isset['displayname'] or (isset['givenname'] and isset['sn'])) and (isset['mail'])
 
         if valid_r_and_s:
             satosa_logging(logger, logging.DEBUG, "{} R&S attribute set found, user may continue".format(logprefix),

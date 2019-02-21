@@ -45,7 +45,6 @@ class AttributeCheck(ResponseMicroService):
         # Find the entityID for the SP that initiated the flow and target IdP
         try:
             spEntityID = context.state.state_dict['SATOSA_BASE']['requester']
-            idpEntityID = data.auth_info.issuer
         except KeyError:
             satosa_logging(logger, logging.ERROR,
                            "{} Unable to determine the entityID's for the IdP or SP".format(logprefix), context.state)

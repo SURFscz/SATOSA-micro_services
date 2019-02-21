@@ -10,20 +10,10 @@ Remove attributes from internal representation based on source IdP, Destination 
 Add simple static html endpoints. Handy for metadata serving and error pages.
 #### custom_uid.py
 Creates a custom unique identifier, used for COManage provisioning.
-#### db_attribute_store.py
-Retrieves COManage attributes from shared databaes. Requires mysqlclient.
+#### sbs_attribute_store.py
+Retrieves COManage attributes from SBS. Requires requests.
 
 #### r_and_s_acl.py
-
-## Abandoned
-These were used earlier in development but are currently not used in SCZ-Deploy.
-#### attributes_acl.py
-Deny access based on absence of attributes. This is superceded by r_and_s_acl.py.
-#### comanage.py
-Micro service to directly query COManage API. This is superceded by db_attribute_store.py.
-#### db_acl.py
-Deny access if user is not present in database. Not used anymore.
-
 
 ## Development
 ```

@@ -38,7 +38,7 @@ class CustomAlias(RequestMicroService):
         logger.info("{} _handle: {} - {} - {}".format(self.logprefix, endpoint, target, alias))
         try:
             response = open(alias, 'r').read()
-        except:
+        except Exception:
             response = "Not found"
 
         if 'substitutions' in context.state:

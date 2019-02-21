@@ -1,0 +1,19 @@
+{
+  "urn:mace:dir:attribute-def:cn": [
+    "John Doe"
+  ],
+  "urn:mace:dir:attribute-def:isMemberOf": [
+    "AI computing",
+    "ai_res"
+  ],
+  "urn:mace:dir:attribute-def:mail": [
+    "john@org.com",
+    "john@example.org"
+  ],
+  "urn:mace:dir:attribute-def:postalAddress": [
+    "Postal 1234AA"
+  ],
+  "urn:mace:dir:attribute-def:uid": [
+    "urn:john"
+  ]
+}

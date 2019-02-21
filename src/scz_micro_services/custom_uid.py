@@ -61,7 +61,7 @@ class CustomUID(ResponseMicroService):
                 for v in values:
                     try:
                         v = ET.fromstring(v).text
-                    except:
+                    except Exception:
                         pass
                     if v:
                         d[a].append(v)

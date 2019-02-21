@@ -1,0 +1,6 @@
+module: scz_micro_services.sbs_attribute_store.SBSAttributeStore
+name: SBSAttributeStore
+config:
+  sbs_api_user = 'sysread'
+  sbs_api_password = '{{ sbs_sysread_password }}'
+  sbs_api_base_url = '{{ sbs_base_url }}'

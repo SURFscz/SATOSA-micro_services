@@ -11,9 +11,9 @@ class TestCustomUid(TestCase):
 
     def test_custom_uid(self):
         context = munchify({"state": {LOGGER_STATE_KEY: uuid4().urn, "IDHASHER": {}},
-                            "select": {"a": "b", "c": "d"},
-                            "custom_attribute": "",
-                            "user_id": "urn:john"})
+                            "select": ["eduPersonPrincipalName", "eduPersonTargetedID"],
+                            "custom_attribute": "cmuid",
+                            "user_id": True})
         c_uid = CustomUID(context, name="custom_uid", base_url="http://localhost")
 
         def next_call(ctx={}, data={}):
@@ -23,7 +23,8 @@ class TestCustomUid(TestCase):
 
         self.assertEqual(c_uid.logprefix, "CUSTOM_UID:")
 
-        data = munchify({"name_id": "urn:john", "attributes": {"a": "b1", "c": "d1"}})
+        data = munchify({"name_id": "urn:john", "attributes": {"eduPersonPrincipalName": "urn:john",
+                                                               "eduPersonTargetedID": "urn:target"}})
         c_uid.process(context, data)
 
-        self.assertEqual("b|1|d|1", data.user_id)
+        self.assertEqual("u|r|n|:|j|o|h|n|u|r|n|:|t|a|r|g|e|t", data.user_id)
