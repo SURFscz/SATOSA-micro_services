@@ -24,7 +24,8 @@ class SBSAttributeStore(ResponseMicroService):
         self.config = config
         self.converter = AttributeMapper(internal_attributes)
 
-    def _debug(self, msg, context):
+    @staticmethod
+    def _debug(msg, context):
         satosa_logging(logger, logging.DEBUG, msg, context.state)
 
     def process(self, context, data):
