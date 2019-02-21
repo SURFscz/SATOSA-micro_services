@@ -46,7 +46,6 @@ class SBSAttributeStore(ResponseMicroService):
         self._debug(f"{self.log_prefix} entityID for the requester is {sp_entity_id}", context)
         self._debug(f"{self.log_prefix} entityID for the source IdP is {idp_entity_id}", context)
 
-        # Obtain configuration details from the per-SP configuration or the default configuration
         try:
             sbs_api_user = self.config["sbs_api_user"]
             sbs_api_password = self.config["sbs_api_password"]
