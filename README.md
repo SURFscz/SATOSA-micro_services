@@ -1,4 +1,6 @@
 # SATOSA-micro_services
+[![Build Status](https://travis-ci.com/SURFscz/SATOSA-micro_services.svg)](https://travis-ci.com/SURFscz/SATOSA-micro_services)
+[![codecov.io](https://codecov.io/github/SURFscz/SATOSA-micro_services/coverage.svg)](https://codecov.io/github/SURFscz/SATOSA-micro_services)
 Separate micro_services repository for SATOSA
 
 ## Active
