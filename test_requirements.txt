@@ -5,4 +5,4 @@ SATOSA==3.4.8
 flake8==3.7.6
 munch==2.3.2
 requests-mock==1.5.2
-PyYAML==3.13
+PyYAML==4.2b1
