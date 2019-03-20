@@ -37,7 +37,6 @@ class DBAttributeStore(ResponseMicroService):
 
     def process(self, context, data):
         logprefix = DBAttributeStore.logprefix
-        attribute_profile = DBAttributeStore.attribute_profile
 
         # Initialize the configuration to use as the default configuration
         # that is passed during initialization.
@@ -55,7 +54,7 @@ class DBAttributeStore(ResponseMicroService):
             # router = context.state.state_dict['ROUTER']
             # idpEntityID = urlsafe_b64decode(context.state.state_dict[router]['target_entity_id']).decode("utf-8")
             idpEntityID = data.auth_info.issuer
-        except KeyError as err:
+        except KeyError:
             satosa_logging(logger, logging.ERROR,
                            "{} Unable to determine the entityID's for the IdP or SP".format(logprefix), context.state)
             return super().process(context, data)
@@ -164,7 +163,6 @@ class DBAttributeStore(ResponseMicroService):
                 cursor.execute(query, values + [spEntityID])
 
                 rows = cursor.fetchall()
-                return_valles = {}
 
                 for row in rows:
                     attributes = json.loads(row[0])
