@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 import json
 import os
 from unittest import TestCase

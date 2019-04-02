@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 """
 SATOSA microservice that uses an identifier asserted by
 the home organization SAML IdP as a key to query the SBS API
