@@ -12,7 +12,7 @@ setup(
     packages=["scz_micro_services"],
     package_dir={"": "src"},
     install_requires=[
-        "mysqlclient", "requests"
+        "mysqlclient", "requests", "future-fstrings"
     ],
     zip_safe=False,
 )
