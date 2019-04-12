@@ -4,7 +4,7 @@ from uuid import uuid4
 from munch import munchify
 from satosa.logging_util import LOGGER_STATE_KEY
 
-from src.scz_micro_services.custom_uid import CustomUID
+from scz_micro_services.custom_uid import CustomUID
 
 
 class TestCustomUid(TestCase):

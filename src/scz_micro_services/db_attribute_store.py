@@ -113,10 +113,21 @@ class DBAttributeStore(ResponseMicroService):
             else:
                 user_id = self.config['user_id']
 
+            if 'blacklist' in config:
+                blacklist = config['blacklist']
+            else:
+                blacklist = self.config.get('blacklist') or []
+
         except KeyError as err:
             satosa_logging(logger, logging.ERROR, "{} Configuration '{}' is missing".format(logprefix, err),
                            context.state)
             return super().process(context, data)
+
+        if spEntityID in blacklist:
+            satosa_logging(logger, logging.DEBUG, "{} Skipping lookup for {}".format(logprefix, spEntityID),
+                           context.state)
+            return super().process(context, data)
+
         try:
             # satosa_logging(logger, logging.DEBUG, "{} Using DB host {}".format(logprefix, db_host), context.state)
             # satosa_logging(logger, logging.DEBUG, "{} Using DB user {}".format(logprefix, db_user), context.state)

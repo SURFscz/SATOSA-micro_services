@@ -4,3 +4,5 @@ config:
   sbs_api_user: 'sysread'
   sbs_api_password: '{{ sbs_sysread_password }}'
   sbs_api_base_url: '{{ sbs_base_url }}'
+  sbs_blacklist:
+    - https://sbs.host.net/entity-id

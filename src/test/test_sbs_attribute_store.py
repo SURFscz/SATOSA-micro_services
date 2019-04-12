@@ -7,7 +7,7 @@ import requests_mock
 import yaml
 from munch import munchify
 
-from src.scz_micro_services.sbs_attribute_store import SBSAttributeStore
+from scz_micro_services.sbs_attribute_store import SBSAttributeStore
 
 
 class TestSBSAttributeStore(TestCase):
@@ -23,7 +23,8 @@ class TestSBSAttributeStore(TestCase):
         config = munchify({
             "sbs_api_user": "sysread",
             "sbs_api_password": "secret",
-            "sbs_api_base_url": "http://localhost/"})
+            "sbs_api_base_url": "http://localhost/",
+            "sbs_blacklist": []})
         data = self._do_test_process(m, config)
 
         attributes = data.attributes
@@ -44,7 +45,8 @@ class TestSBSAttributeStore(TestCase):
         config = munchify({
             "sbs_api_user": "sysread",
             "sbs_api_password": "secret",
-            "sbs_api_base_url": "http://localhost/"})
+            "sbs_api_base_url": "http://localhost/",
+            "sbs_blacklist": []})
         data = self._do_test_process(m, config, status_code=404)
 
         self.assertEqual(0, len(data.attributes))
@@ -54,7 +56,8 @@ class TestSBSAttributeStore(TestCase):
         config = munchify({
             "sbs_api_user": "sysread",
             "sbs_api_password": "secret",
-            "sbs_api_base_url": "http://localhost/"})
+            "sbs_api_base_url": "http://localhost/",
+            "sbs_blacklist": []})
         data = self._do_test_process(m, config, satosa_base_requester_key="nope")
 
         self.assertEqual(0, len(data.attributes))

@@ -52,9 +52,14 @@ class SBSAttributeStore(ResponseMicroService):
             sbs_api_user = self.config["sbs_api_user"]
             sbs_api_password = self.config["sbs_api_password"]
             sbs_api_base_url = self.config["sbs_api_base_url"]
+            sbs_blacklist = self.config.get("sbs_blacklist") or []
 
         except KeyError as err:
             satosa_logging(logger, logging.ERROR, f"{self.log_prefix} Configuration {err} is missing", context.state)
+            return super().process(context, data)
+
+        if sp_entity_id in sbs_blacklist:
+            satosa_logging(logger, logging.DEBUG, f"{self.log_prefix} Skipping lookup for {sp_entity_id}", context.state)
             return super().process(context, data)
 
         res = requests.get(f"{sbs_api_base_url}api/user_service_profiles/attributes",
