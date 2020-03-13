@@ -62,7 +62,7 @@ class SBSAttributeStore(ResponseMicroService):
             satosa_logging(logger, logging.DEBUG, f"{self.log_prefix} Skipping lookup for {sp_entity_id}", context.state)
             return super().process(context, data)
 
-        res = requests.get(f"{sbs_api_base_url}api/user_service_profiles/attributes",
+        res = requests.get(f"{sbs_api_base_url}api/users/attributes",
                            params={"service_entity_id": sp_entity_id, "uid": data.user_id},
                            auth=(sbs_api_user, sbs_api_password))
         if res.status_code != 200:
