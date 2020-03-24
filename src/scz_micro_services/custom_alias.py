@@ -2,6 +2,7 @@
 A Custom Alias microservice
 """
 import logging
+import mimetypes
 
 from satosa.micro_services.base import RequestMicroService
 from satosa.response import Response
@@ -37,13 +38,16 @@ class CustomAlias(RequestMicroService):
         alias = "%s/%s" % (self.locations[endpoint], target)
         logger.info("{} _handle: {} - {} - {}".format(self.logprefix, endpoint, target, alias))
         try:
-            response = open(alias, 'r').read()
-        except Exception:
-            response = "Not found"
+            response = open(alias, 'rb').read()
+            mimetype = mimetypes.guess_type(alias)[0]
+            logger.debug("mimetype {}".format(mimetype))
+        except Exception as e:
+            response = "Not found {}".format(e)
+            mimetype = "text/html"
 
         if 'substitutions' in context.state:
             for search, replace in context.state['substitutions'].items():
                 logger.info("search: {}, replace: {}".format(search, replace))
                 response = response.replace(search, replace)
 
-        return Response(response)
+        return Response(response, content=mimetype)
